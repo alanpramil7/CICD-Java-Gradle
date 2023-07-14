@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: read
-
+ 
 env:
   DATREE_TOKEN: ${{ secrets.DATREE_TOKEN }}
 
