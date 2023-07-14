@@ -19,6 +19,7 @@ spec:
   selector:
     app.kubernetes.io/name: myapp
     app.kubernetes.io/instance: myapp
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -46,7 +47,7 @@ spec:
         - name: registry-secret
       containers:
         - name: myapp
-          image: imagename
+          image: imagename:1.0
           command: ["/bin/sh"]
           args: ["-c","sh /usr/local/tomcat/bin/startup.sh;while true; do echo hello; sleep 10;done"]
           imagePullPolicy: IfNotPresent
@@ -77,5 +78,14 @@ spec:
               memory: 0.25Gi
               cpu: 0.5
             limits:
-              memory: 0.25Gi 
+              memory: 0.25Gi
               cpu: 0.5
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
+          seccompProfile:
+            type: RuntimeDefault
