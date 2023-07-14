@@ -5,7 +5,7 @@ metadata:
   labels:
     app: your-app
 spec:
-  replicas: 1
+  replicas: 2  # Increased the number of replicas for high availability
   selector:
     matchLabels:
       app: your-app
@@ -14,11 +14,33 @@ spec:
       labels:
         app: your-app
     spec:
+      securityContext:  # Added securityContext for containers and pods
+        runAsNonRoot: true  # Prevent containers from running with root privileges
       containers:
       - name: your-app-container
         image: your-app-image:latest
+        securityContext:
+          readOnlyRootFilesystem: true  # Set the root filesystem as read-only
+          allowPrivilegeEscalation: false  # Prevent container from escalating privileges
         ports:
         - containerPort: 8080
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production
+        livenessProbe:  # Added a liveness probe configuration
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:  # Added a readiness probe configuration
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:  # Added resource limits and requests
+          limits:
+            memory: "1Gi"
+          requests:
+            memory: "512Mi"
