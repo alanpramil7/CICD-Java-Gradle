@@ -66,7 +66,7 @@ jobs:
             docker rmi alanpramil7/javaapp:${{ github.run_number }} alanpramil7/javaapp:latest
             
       - name: deploying manifest file on k8s cluster
-        run:
+        run: |
           sed -i "s;imagename:1.0;alanpramil7/javaapp:${{ github.run_number }};g" kube.yaml
           kubectl apply -f kube.yaml
           sleep 30
