@@ -63,4 +63,8 @@ jobs:
           tags: |
              alanpramil7/javaapp:${{ github.run_number }}
              alanpramil7/javaapp:latest
+             
+      - name: Delete docker images 
+        run: |
+            docker rmi alanpramil7/javaapp:${{ github.run_number }} alanpramil7/javaapp:latest
       
