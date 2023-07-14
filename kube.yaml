@@ -44,6 +44,9 @@ spec:
     spec:
       imagePullSecrets:
         - name: registry-secret
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault  # Set the seccomp profile to runtime/default
       containers:
         - name: myapp
           image: imagename:1.0  # Specify a specific version for the container image
@@ -54,6 +57,9 @@ spec:
             readOnlyRootFilesystem: true  # Set the root filesystem as read-only
             runAsNonRoot: true  # Prevent containers from running with root privileges
             allowPrivilegeEscalation: false  # Prevent containers from escalating privileges
+            capabilities:
+              drop:
+              - NET_RAW  # Prohibit the NET_RAW capability
           ports:
             - name: http
               containerPort: 8080
