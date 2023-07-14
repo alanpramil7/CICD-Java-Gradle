@@ -1,51 +1,85 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+  labels:
+    helm.sh/chart: myapp-0.2.0
+    app.kubernetes.io/name: myapp
+    app.kubernetes.io/instance: myapp
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: myapp
+    app.kubernetes.io/instance: myapp
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: your-app-deployment
+  name: myapp
   labels:
-    app: your-app
+    helm.sh/chart: myapp-0.2.0
+    app.kubernetes.io/name: myapp
+    app.kubernetes.io/instance: myapp
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: your-app
+      app.kubernetes.io/name: myapp
+      app.kubernetes.io/instance: myapp
   template:
     metadata:
       labels:
-        app: your-app
+        app.kubernetes.io/name: myapp
+        app.kubernetes.io/instance: myapp
     spec:
-      securityContext:
-        seccompProfile:
-          type: RuntimeDefault
+      imagePullSecrets:
+        - name: registry-secret
       containers:
-      - name: your-app-container
-        image: your-app-image:1.0  # Specify a specific version for the container image
-        securityContext:
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - NET_RAW  # Prohibit the NET_RAW capability
-        ports:
-        - containerPort: 8080
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: production
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 5
-        resources:
-          limits:
-            memory: "1Gi"
-          requests:
-            memory: "512Mi"
+        - name: myapp
+          image: imagename:1.0  # Specify a specific version for the container image
+          command: ["/bin/sh"]
+          args: ["-c","sh /usr/local/tomcat/bin/startup.sh;while true; do echo hello; sleep 10;done"]
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            readOnlyRootFilesystem: true  # Set the root filesystem as read-only
+            runAsNonRoot: true  # Prevent containers from running with root privileges
+            allowPrivilegeEscalation: false  # Prevent containers from escalating privileges
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 10
+          resources:
+            requests:
+              memory: 0.25Gi
+              cpu: 0.5
+            limits:
+              memory: 0.25Gi
+              cpu: 0.5
