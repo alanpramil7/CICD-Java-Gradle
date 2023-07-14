@@ -16,14 +16,14 @@ spec:
     spec:
       securityContext:
         seccompProfile:
-          type: RuntimeDefault  # Set the seccomp profile to runtime/default
+          type: RuntimeDefault
       containers:
       - name: your-app-container
         image: your-app-image:latest
         securityContext:
-          capabilities:
-            drop:
-            - NET_RAW  # Drop the NET_RAW capability
+          readOnlyRootFilesystem: true  # Set the root filesystem as read-only
+          runAsNonRoot: true  # Prevent containers from running with root privileges
+          allowPrivilegeEscalation: false  # Prevent containers from escalating privileges
         ports:
         - containerPort: 8080
         env:
