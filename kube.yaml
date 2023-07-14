@@ -19,11 +19,14 @@ spec:
           type: RuntimeDefault
       containers:
       - name: your-app-container
-        image: your-app-image:latest
+        image: your-app-image:1.0  # Specify a specific version for the container image
         securityContext:
-          readOnlyRootFilesystem: true  # Set the root filesystem as read-only
-          runAsNonRoot: true  # Prevent containers from running with root privileges
-          allowPrivilegeEscalation: false  # Prevent containers from escalating privileges
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - NET_RAW  # Prohibit the NET_RAW capability
         ports:
         - containerPort: 8080
         env:
