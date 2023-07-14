@@ -42,8 +42,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      - name: Run Datree Policy Check
-        uses: datreeio/action-datree@main
-        with:
-          path: "kube.yaml"
-          cliArguments: "--only-k8s-files"
+      - name: Install Datree
+        run: curl https://get.datree.io | /bin/bash
+        
+      - name: Run Datree's policy check
+        run: datree test kube.yaml
