@@ -44,23 +44,23 @@ spec:
         app.kubernetes.io/instance: myapp
     spec:
       imagePullSecrets:
-        - name: registry-secret
+        - name: dockerhub-secret
       securityContext:
         seccompProfile:
-          type: RuntimeDefault  # Set the seccomp profile to runtime/default
+          type: RuntimeDefault  
       containers:
         - name: myapp
-          image: imagename:1.0  # Specify a specific version for the container image
+          image: imagename:1.0 
           command: ["/bin/sh"]
           args: ["-c","sh /usr/local/tomcat/bin/startup.sh;while true; do echo hello; sleep 10;done"]
           imagePullPolicy: IfNotPresent
           securityContext:
-            readOnlyRootFilesystem: true  # Set the root filesystem as read-only
-            runAsNonRoot: true  # Prevent containers from running with root privileges
-            allowPrivilegeEscalation: false  # Prevent containers from escalating privileges
+            readOnlyRootFilesystem: true  
+            runAsNonRoot: true  
+            allowPrivilegeEscalation: false 
             capabilities:
               drop:
-              - NET_RAW  # Prohibit the NET_RAW capability
+              - NET_RAW  
           ports:
             - name: http
               containerPort: 8080
