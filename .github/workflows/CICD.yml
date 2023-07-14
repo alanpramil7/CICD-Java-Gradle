@@ -53,5 +53,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-        
+          
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: |
+             alanpramil7/javaapp:${{ github.run_number }}
+             alanpramil7/javaapp:latest
       
