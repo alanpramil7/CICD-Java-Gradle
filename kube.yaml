@@ -43,12 +43,6 @@ spec:
     spec:
       imagePullSecrets:
         - name: dockerhub-secret
-      securityContext:
-        runAsNonRoot: false
-        allowPrivilegeEscalation: false 
-        capabilities:
-          drop:
-            - NET_RAW  
       containers:
         - name: myapp
           image: imagename:1.0 
