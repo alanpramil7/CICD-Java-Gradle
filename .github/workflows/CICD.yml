@@ -77,7 +77,8 @@ jobs:
       - name: verification 
         run: |
            sleep 90
-           kubectl run curl --image=curlimages/curl -i --rm --restart=Never -- curl myapp:8080
+           kubectl run curl --image=curlimages/curl -i --rm --restart=Never -- curl 34.121.46.152:31481
+
 
             
       
