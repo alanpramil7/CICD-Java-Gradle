@@ -1,7 +1,7 @@
 name: Java CICD with Gradle 
   
 on:
-  pull_request:
+  push:
     branches: ["main"]
 
 permissions:
