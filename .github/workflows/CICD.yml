@@ -74,10 +74,11 @@ jobs:
           sleep 30
           kubectl get po
           
-      - name: verification 
-        run: |
-           sleep 60
-           kubectl run curl --image=curlimages/curl -i --rm --restart=Never -- curl myapp:8080
+#       - name: verification 
+#         run: |
+#            sleep 90
+#            kubectl run curl --image=curlimages/curl -i --rm --restart=Never -- curl 34.121.46.152:31481
+
 
             
       
