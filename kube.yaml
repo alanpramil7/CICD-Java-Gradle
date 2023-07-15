@@ -1,5 +1,3 @@
-# This is kubernetes manifest files 
---- 
 apiVersion: v1
 kind: Service
 metadata:
@@ -46,21 +44,17 @@ spec:
       imagePullSecrets:
         - name: dockerhub-secret
       securityContext:
-        seccompProfile:
-          type: RuntimeDefault  
+        runAsNonRoot: false
+        allowPrivilegeEscalation: false 
+        capabilities:
+          drop:
+            - NET_RAW  
       containers:
         - name: myapp
           image: imagename:1.0 
           command: ["/bin/sh"]
           args: ["-c","sh /usr/local/tomcat/bin/startup.sh;while true; do echo hello; sleep 10;done"]
           imagePullPolicy: IfNotPresent
-          securityContext:
-            readOnlyRootFilesystem: true  
-            runAsNonRoot: false
-            allowPrivilegeEscalation: false 
-            capabilities:
-              drop:
-              - NET_RAW  
           ports:
             - name: http
               containerPort: 8080
@@ -90,3 +84,10 @@ spec:
             limits:
               memory: 0.25Gi
               cpu: 0.5
+          volumeMounts:
+            - name: log-volume
+              mountPath: /usr/local/tomcat/logs
+              readOnly: false
+      volumes:
+        - name: log-volume
+          emptyDir: {}
